@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>World Football - Career Manager</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="gameSplash" class="game-splash" role="button" tabindex="0" aria-label="Abrir FM Career 2026">
+  <div class="game-splash-backdrop"></div>
+  <img class="game-splash-cover" src="../assets/images/fm_cover_2026.png" alt="FM 26 Football Manager Career 2026">
+  <div class="game-splash-hint">Clique ou pressione qualquer tecla para continuar</div>
+</div>
+<section id="menu" class="screen active home-screen">
+  <div class="reference-home">
+    <header class="reference-home-header">
+      <div class="reference-brand">FOOTBALL MANAGER<br>CAREER 2026</div>
+      <div class="reference-status" id="homeTopStatus"><span></span> DESCONECTADO</div>
+    </header>
+
+    <main class="reference-home-main">
+      <section class="reference-login-card" aria-label="Login">
+        <div class="reference-user-icon" aria-hidden="true">
+          <div class="user-head"></div><div class="user-body"></div>
+        </div>
+        <h1>Faça login para salvar seu progresso na nuvem</h1>
+
+        <div class="reference-input-wrap">
+          <span class="field-icon">✉</span>
+          <input id="homeEmail" type="email" placeholder="seu@email.com" autocomplete="email">
+        </div>
+        <div class="reference-input-wrap">
+          <span class="field-icon">🔒</span>
+          <input id="homePassword" type="password" placeholder="••••••••••" autocomplete="current-password">
+          <button class="password-eye" type="button" onclick="toggleHomePassword()" aria-label="Mostrar senha">◉</button>
+        </div>
+
+        <button class="reference-enter" type="button" onclick="homeLogin()">ENTRAR</button>
+        <button class="reference-google" type="button" onclick="homeGoogleLogin()"><span class="google-g">G</span> Entrar com Google</button>
+        <button class="reference-create" type="button" onclick="openAccountSignup()">Criar conta</button>
+        <button class="reference-guest" type="button" onclick="playAsGuest2026()">Jogar como convidado</button>
+      </section>
+    </main>
+
+    <nav class="reference-bottom-actions" aria-label="Ações principais">
+      <button onclick="enterHomeCareer()"><span>▷</span> CONTINUAR LOCAL</button>
+      <button onclick="newCareer()"><span>＋</span> NOVA CARREIRA</button>
+      <button onclick="showHomeNotice('Configurações','Configurações do jogo serão adicionadas aqui.')"><span>⚙</span> CONFIGURAÇÕES</button>
+    </nav>
+  </div>
+</section>
+<section id="countrySelection" class="screen">
+  <header class="topbar">
+    <button class="secondary" onclick="showScreen('menu')">← Voltar</button>
+    <h2>ESCOLHA O PAÍS</h2>
+  </header>
+  <div id="countriesContainer" class="clubs-grid"></div>
+</section>
+
+<section id="clubSelection" class="screen">
+  <header class="topbar">
+    <button class="secondary" onclick="showScreen('countrySelection')">← Voltar</button>
+    <h2>ESCOLHA SEU CLUBE</h2>
+  </header>
+  <div id="clubsContainer" class="clubs-grid"></div>
+</section>
+
+<section id="career" class="screen career-screen">
+  <header class="career-pro-header">
+    <div class="pro-brand"><div class="pro-shield">⚽</div><div><b>FOOTBALL MANAGER</b><strong>CAREER 2026</strong></div></div>
+    <div class="pro-club"><span id="clubMiniBadge" class="club-mini-badge">⚽</span><div><b id="clubName">Clube</b><small id="seasonInfo">Temporada 2026/27</small></div></div>
+    <div class="pro-money">🏦 <b id="clubMoney">R$ 0</b></div>
+    <div class="pro-date" id="proDate">SEX, 14 MAR 2026 • 08:32</div>
+    <div class="pro-icons"><button onclick="showHomeNotice('Notificações','Nenhuma notificação nova.')">🔔</button><button onclick="showHomeNotice('Configurações','Configurações da carreira.')">⚙</button><button onclick="showHomeNotice('Perfil','Treinador da carreira atual.')">👤</button></div>
+  </header>
+
+  <div class="career-layout">
+    <aside class="career-sidebar">
+      <button class="side-nav active" onclick="focusCareer('careerHome',this)">⌂ <span>INÍCIO</span></button>
+      <button class="side-nav" onclick="openSquadListFromSidebar(this)">👕 <span>ELENCO</span></button>
+      <button class="side-nav" onclick="showHomeNotice('Táticas','A área de táticas pode ser expandida aqui.')">▣ <span>TÁTICAS</span></button>
+      <button class="side-nav" onclick="showHomeNotice('Treino','O sistema de treinos será integrado aqui.')">♟ <span>TREINO</span></button>
+      <button class="side-nav" onclick="focusCareer('marketSection',this)">↕ <span>MERCADO</span></button>
+      <button class="side-nav" onclick="focusCareer('calendarPanel',this)">▦ <span>CALENDÁRIO</span></button>
+      <button class="side-nav" onclick="showHomeNotice('Finanças',`Saldo atual: ${money(game?.money||0)}`)">▥ <span>FINANÇAS</span></button>
+      <div class="sidebar-footer">v26.3.1 • SAVED AUTO</div>
+    </aside>
+
+    <main class="career-main" id="careerHome">
+      <section class="pro-next card next-match">
+        <div class="pro-section-label">PRÓXIMO JOGO</div>
+        <div id="nextMatch" class="match-box">-</div>
+        <div class="match-actions"><button onclick="advanceOneDay(true)">▶ SIMULAR PARTIDA</button><button class="secondary" onclick="advanceToNextMatch()">⏩ ATÉ PRÓXIMA</button></div>
+        <div id="lastResult" class="last-result"></div>
+      </section>
+
+      <div class="career-center-grid">
+        <section class="card pro-table-card">
+          <div class="card-title"><h2>📋 TABELA DO BRASILEIRÃO</h2><span id="roundInfo"></span></div>
+          <div id="leagueTable"></div>
+        </section>
+        <section class="card pro-news-card">
+          <div class="card-title"><h2>📰 NOTÍCIAS DO CLUBE</h2></div>
+          <div id="careerNews"></div>
+          <div class="card-title form-title"><h2>📈 JOGADORES EM FORMA</h2></div>
+          <div id="formPlayers"></div>
+        </section>
+      </div>
+
+      <section class="pro-lower-grid">
+        <section class="card wide collapsible-section" id="squadSection"><div class="card-title"><div style="display:flex;align-items:center;gap:10px"><h2>ELENCO</h2><button class="small secondary" onclick="openSquadLineupManager()">⚽ ESCALAÇÃO</button></div><button class="small toggle-btn" onclick="toggleSection('squadList', this)">MOSTRAR</button></div><div id="squadList" class="collapsible-content hidden-content"></div></section>
+        <section class="card wide collapsible-section" id="marketSectionCard"><div class="card-title"><h2>MERCADO</h2><button class="small toggle-btn" onclick="toggleSection('marketSection', this)">MOSTRAR</button></div><div id="marketSection" class="collapsible-content hidden-content"><div class="tabs section-tabs"><button class="small" onclick="showMarket('list')">Mercado</button><button class="small" onclick="showMarket('offers')">Ofertas</button><button class="small" onclick="showMarket('loans')">Empréstimos</button></div><div id="marketPlayers"></div></div></section>
+        <section class="card wide collapsible-section"><div class="card-title"><h2>CALENDÁRIO</h2><button class="small toggle-btn" onclick="toggleSection('calendarPanel', this)">MOSTRAR</button></div><div id="calendarPanel" class="collapsible-content hidden-content"></div></section>
+        <section class="card wide collapsible-section"><div class="card-title"><h2>COPA DO BRASIL</h2><button class="small toggle-btn" onclick="toggleSection('nationalCupPanel', this)">MOSTRAR</button></div><div id="nationalCupPanel" class="collapsible-content hidden-content"></div></section>
+        <section class="card wide collapsible-section"><div class="card-title"><h2>LIBERTADORES</h2><button class="small toggle-btn" onclick="toggleSection('continentalSection', this)">MOSTRAR</button></div><div id="continentalSection" class="collapsible-content hidden-content"><div class="tabs section-tabs"><button class="small" onclick="showContinental('lib')">Libertadores</button><button class="small" onclick="showContinental('sud')">Sul-Americana</button></div><div id="continentalPanel"></div></div></section>
+      </section>
+    </main>
+
+    <aside class="career-right">
+      <section class="pro-side-card coach-card"><div class="side-heading">◉ TÉCNICO</div><div class="coach-avatar">👨🏻</div><h3>CARREIRA</h3><p>Treinador • Brasil</p><strong class="rep-line">Reputação: <span id="clubRep">0</span>/100</strong></section>
+      <section class="pro-side-card"><div class="side-heading">☻ MORAL DO TIME</div><div class="morale-value" id="moraleValue">78%</div><div class="morale-bar"><span id="moraleBar"></span></div><small id="moraleText">Confiança da equipe</small></section>
+      <section class="pro-side-card objective-card"><div class="side-heading">◎ OBJETIVOS DA TEMPORADA</div><div id="objectiveSummary"></div></section>
+      <section class="pro-side-card"><div class="side-heading">☻ AMBIENTE DO VESTIÁRIO</div><strong class="positive">Excelente</strong> 👍</section>
+      <div id="careerInfo" class="career-info-hidden"></div>
+    </aside>
+  </div>
+</section>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal()">×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const splash = document.getElementById('gameSplash');
+  if (!splash) return;
+  let closed = false;
+  const closeSplash = () => {
+    if (closed) return;
+    closed = true;
+    splash.classList.add('hidden');
+    setTimeout(() => splash.remove(), 650);
+  };
+  splash.addEventListener('click', closeSplash);
+  splash.addEventListener('keydown', (e) => { if (e.key !== 'Tab') closeSplash(); });
+  window.addEventListener('keydown', (e) => { if (e.key !== 'Tab') closeSplash(); }, { once: true });
+  setTimeout(closeSplash, 3500);
+})();
+</script>
+<script src="js/game.js"></script>
+</body>
+</html>
